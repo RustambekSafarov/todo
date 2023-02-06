@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/widgets.dart';
 
 import 'todo.dart';
 
@@ -10,10 +13,10 @@ class DBSaver with ChangeNotifier {
     WidgetsFlutterBinding.ensureInitialized();
 
     return openDatabase(
-      join(await getDatabasesPath(), 'todo_database.db'),
+      join(await getDatabasesPath(), 'tod.db'),
       onCreate: (db, version) {
         return db.execute(
-            'CREATE TABLE todo(id integer, title TEXT, type TEXT, note TEXT, date DATETIME)');
+            'CREATE TABLE todo(id TEXT PRIMARY KEY, title TEXT, type TEXT, note TEXT, date TEXT, isdone TEXT)');
       },
       version: 1,
     );
@@ -24,31 +27,30 @@ class DBSaver with ChangeNotifier {
 
     await db.insert(
       'todo',
-      {
-        'title': todo.title,
-        'id': todo.id,
-        'type': todo.type,
-        'note': todo.note,
-        'date': todo.date,
-      },
+      todo.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    db.close();
   }
 
-  List<Todo> todoList = [];
-  Future<void> todos() async {
+  List<Todo> _todoList = [];
+
+  Future<void> getTodos() async {
     final db = await openDB();
+
     final List<Map<String, dynamic>> maps = await db.query('todo');
 
-    todoList = List.generate(maps.length, (index) {
+    _todoList = List.generate(maps.length, (index) {
       return Todo(
         title: maps[index]['title'],
         id: maps[index]['id'],
         type: maps[index]['type'],
         note: maps[index]['note'],
-        date: maps[index]['date'],
+        date: DateTime.parse(maps[index]['date']),
+        isDone: maps[index]['isdone'],
       );
     });
+    db.close();
   }
 
   Future<void> updateTodo(Todo todo) async {
@@ -56,18 +58,13 @@ class DBSaver with ChangeNotifier {
 
     db.update(
       'todo',
-      {
-        'title': todo.title,
-        'id': todo.id,
-        'type': todo.type,
-        'note': todo.note,
-        'date': todo.date,
-      },
+      todo.toMap(),
       // Ensure that the Dog has a matching id.
       where: 'id = ?',
       // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [todo.id],
     );
+    db.close();
   }
 
   Future<void> deleteTodo(String id) async {
@@ -78,5 +75,11 @@ class DBSaver with ChangeNotifier {
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    db.close();
+  }
+
+  List<Todo> get todoList {
+    return [..._todoList];
   }
 }

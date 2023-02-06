@@ -33,7 +33,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
     // ignore: use_build_context_synchronously
     final nT = await showTimePicker(
       context: context,
-      initialTime: const TimeOfDay(hour: 09, minute: 09),
+      initialTime: const TimeOfDay(hour: 01, minute: 01),
     );
     if (nT == null) {
       return;
@@ -48,7 +48,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
   Widget build(BuildContext context) {
     return Consumer<DBSaver>(
       builder: (context, value, child) => Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 30, right: 14, left: 14),

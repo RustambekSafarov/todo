@@ -7,7 +7,8 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(seconds: 1), () {
-      Navigator.pushNamedAndRemoveUntil(context, '/category', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/category-list', (route) => false);
     });
     return Scaffold(
       backgroundColor: Colors.white,

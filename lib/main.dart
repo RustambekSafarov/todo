@@ -32,12 +32,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: CategoryScreen(),
+        initialRoute: '/splash',
         routes: {
-          SplashScreen.routeName: (context) => SplashScreen(),
-          TodoListScreen.routeName: (context) => TodoListScreen(),
-          CategoryScreen.routeName: (context) => CategoryScreen(),
-          AddTodoScreen.routeName: (context) => AddTodoScreen(),
+          SplashScreen.routeName: (context) => const SplashScreen(),
+          TodoListScreen.routeName: (context) => const TodoListScreen(),
+          CategoryScreen.routeName: (context) => const CategoryScreen(),
+          AddTodoScreen.routeName: (context) => const AddTodoScreen(),
         },
       ),
     );

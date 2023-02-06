@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/db_saver.dart';
 
 class CategoryItem extends StatelessWidget {
   final String title;
@@ -26,8 +29,12 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final list = Provider.of<DBSaver>(context).todoList;
     return InkWell(
-      onTap: () => selectCategory(context),
+      onTap: () {
+        print(list);
+        selectCategory(context);
+      },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
