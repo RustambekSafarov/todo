@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/models/db_saver.dart';
 import 'package:todo/provider/todo.dart';
 import 'package:todo/screens/add_todo_screen.dart';
-import 'package:todo/screens/categories_screen.dart';
-import 'package:todo/screens/splash_screen.dart';
+import 'package:todo/screens/home_screen.dart';
+import 'package:todo/screens/login_screen.dart';
+import 'package:todo/screens/register_screen.dart';
 import 'package:todo/screens/todo_list_screen.dart';
 
 void main() {
@@ -20,25 +21,53 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => DBSaver(),
-        ),
-        ChangeNotifierProvider(
           create: (context) => CategoryList(),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Todo List',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: '/splash',
-        routes: {
-          SplashScreen.routeName: (context) => const SplashScreen(),
-          TodoListScreen.routeName: (context) => const TodoListScreen(),
-          CategoryScreen.routeName: (context) => const CategoryScreen(),
-          AddTodoScreen.routeName: (context) => const AddTodoScreen(),
-        },
+        routerConfig: GoRouter(
+          initialLocation: '/',
+          routes: [
+            GoRoute(
+              path: '/',
+              name: HomeScreen.routeName,
+              builder: (context, state) => HomeScreen(),
+              routes: [
+                GoRoute(
+                  path: 'todos',
+                  name: TodoListScreen.routeName,
+                  builder: (context, state) => TodoListScreen(
+                    title: (state.extra as Map<String, String>)['title']
+                        .toString(),
+                    type:
+                        (state.extra as Map<String, String>)['type'].toString(),
+                  ),
+                ),
+                GoRoute(
+                  path: 'add-new',
+                  name: AddTodoScreen.routeName,
+                  builder: (context, state) => AddTodoScreen(),
+                )
+              ],
+            ),
+            GoRoute(
+                path: '/login',
+                name: LoginScreen.routeName,
+                builder: (context, state) => LoginScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'register',
+                    name: RegisterScreen.routeName,
+                    builder: (context, state) => RegisterScreen(),
+                  ),
+                ]),
+          ],
+        ),
       ),
     );
   }

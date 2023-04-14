@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-
-import '../models/db_saver.dart';
+import 'package:todo/screens/todo_list_screen.dart';
+import 'package:todo/widgets/todo_item.dart';
 
 class CategoryItem extends StatelessWidget {
   final String title;
@@ -18,9 +20,9 @@ class CategoryItem extends StatelessWidget {
   });
 
   selectCategory(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(
-      '/todo-list',
-      arguments: {
+    ctx.goNamed(
+      TodoListScreen.routeName,
+      extra: {
         'title': title,
         'type': type,
       },
@@ -29,10 +31,11 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final list = Provider.of<DBSaver>(context).todoList;
     return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
       onTap: () {
-        print(list);
         selectCategory(context);
       },
       child: Padding(

@@ -5,15 +5,18 @@ import '../models/sections.dart';
 class CategoryList with ChangeNotifier {
   final List<Section> _categories = [
     Section(
-        title: 'All',
-        icon: const Icon(
-          Icons.assignment,
-          color: Color(0xFF5786FF),
-          size: 30,
-        ),
-        tasks: 0,
-        type: 'all'),
+      id: 0,
+      title: 'All',
+      icon: const Icon(
+        Icons.assignment,
+        color: Color(0xFF5786FF),
+        size: 30,
+      ),
+      tasks: 0,
+      type: 'all',
+    ),
     Section(
+        id: 1,
         title: 'Work',
         icon: const Icon(
           Icons.work,
@@ -23,6 +26,7 @@ class CategoryList with ChangeNotifier {
         tasks: 0,
         type: 'work'),
     Section(
+        id: 2,
         title: 'Music',
         icon: const Icon(
           Icons.library_music,
@@ -32,6 +36,7 @@ class CategoryList with ChangeNotifier {
         tasks: 0,
         type: 'music'),
     Section(
+        id: 3,
         title: 'Travel',
         icon: const Icon(
           Icons.travel_explore,
@@ -41,6 +46,7 @@ class CategoryList with ChangeNotifier {
         tasks: 0,
         type: 'travel'),
     Section(
+        id: 4,
         title: 'Study',
         icon: const Icon(
           Icons.menu_book_sharp,
@@ -50,6 +56,7 @@ class CategoryList with ChangeNotifier {
         tasks: 0,
         type: 'study'),
     Section(
+        id: 5,
         title: 'Home',
         icon: const Icon(
           Icons.home_sharp,
