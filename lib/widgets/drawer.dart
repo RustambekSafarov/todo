@@ -10,7 +10,7 @@ class MainDrawer extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Drawer(
-      width: 270,
+      width: width - width / 5,
       child: Column(
         children: [
           Container(
@@ -32,7 +32,12 @@ class MainDrawer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text('example@gmail.com'),
+                    Text(
+                      'example@gmail.com',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                     SizedBox(
                       width: width / 10,
                     ),

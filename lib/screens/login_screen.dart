@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/screens/home_screen.dart';
 import 'package:todo/screens/register_screen.dart';
+import 'package:todo/screens/todo_list_screen.dart';
+import 'package:todo/services/post.dart';
+
+import '../services/sqflite_db.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,11 +15,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  String token = '';
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+    getTokenFromDatabase().then((value) => token = value);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -26,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(10.0),
               child: IconButton(
                 onPressed: () {
-                  context.goNamed(HomeScreen.routeName);
+                  context.goNamed(TodoListScreen.routeName);
                 },
                 icon: Icon(Icons.arrow_back),
               ),
@@ -50,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                        color: Colors.grey[50],
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x4BC487C6),
@@ -69,17 +78,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          child: const TextField(
+                          child: TextField(
+                            controller: usernameController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: "Email",
+                              hintText: "Username",
                               hintStyle: TextStyle(color: Colors.grey),
                             ),
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.all(10),
-                          child: const TextField(
+                          child: TextField(
+                            controller: passwordController,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Password",
@@ -112,7 +123,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: height / 15,
                       width: width / 2,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          userLogin(
+                            usernameController.text,
+                            passwordController.text,
+                          ).then((value) => token = value);
+                          saveTokenToDatabase(token);
+                          // context.goNamed(TodoListScreen.routeName);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF31274F),
                           shape: RoundedRectangleBorder(

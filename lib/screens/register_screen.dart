@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo/screens/login_screen.dart';
-
-import 'home_screen.dart';
+import 'package:todo/screens/todo_list_screen.dart';
+import 'package:todo/services/post.dart';
+import 'package:todo/services/sqflite_db.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,11 +14,19 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  String? token;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
+                      color: Colors.grey[50],
                       boxShadow: const [
                         BoxShadow(
                           color: Color(0x4BC487C6),
@@ -61,26 +70,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Colors.grey[200]!,
-                            ),
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: firstNameController,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "First name",
+                            hintStyle: TextStyle(color: Colors.grey),
                           ),
                         ),
-                        child: const TextField(
-                          decoration: InputDecoration(
+                      ),
+                      Divider(),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: lastNameController,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Last name",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Username",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: "Email",
                             hintStyle: TextStyle(color: Colors.grey),
                           ),
                         ),
                       ),
+                      Divider(),
                       Container(
-                        padding: const EdgeInsets.all(10),
-                        child: const TextField(
-                          decoration: InputDecoration(
+                        padding: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: passwordController,
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: "Password",
                             hintStyle: TextStyle(color: Colors.grey),
@@ -112,7 +153,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: height / 15,
                     width: width / 2,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        createUser(
+                          usernameController.text,
+                          passwordController.text,
+                          emailController.text,
+                          firstNameController.text,
+                          lastNameController.text,
+                        ).then((value) => token = value);
+                        saveTokenToDatabase(token!);
+                        context.goNamed(TodoListScreen.routeName);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF31274F),
                         shape: RoundedRectangleBorder(
@@ -120,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       child: const Center(
-                        child: Text('Login'),
+                        child: Text('Sign up'),
                       ),
                     ),
                   ),
