@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             passwordController.text,
                           ).then((value) => token = value);
                           saveTokenToDatabase(token);
-                          // context.goNamed(TodoListScreen.routeName);
+                          context.goNamed(TodoListScreen.routeName);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF31274F),

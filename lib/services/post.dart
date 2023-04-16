@@ -31,7 +31,12 @@ Future<String> createUser(
 Future<String> userLogin(String username, String password) async {
   Uri uri =
       Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/userlogin/');
-  var headers = {'Content-Type': 'application/json'};
+  String basicAuth =
+      'Basic ' + base64Encode(utf8.encode('$username:$password'));
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': basicAuth,
+  };
   Map<String, String> body = {
     'username': username,
     'password': password,
@@ -41,6 +46,7 @@ Future<String> userLogin(String username, String password) async {
     headers: headers,
     body: jsonEncode(body),
   );
+
   if (response.statusCode == 200) {
     print(await response.body);
   } else {
