@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/models/todo.dart';
+import 'package:todo/screens/todo_list_screen.dart';
 import 'package:todo/services/post.dart';
 
 import '../services/sqflite_db.dart';
@@ -70,8 +72,9 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
-                        createTodo(_titleController.text, 1, token);
-                        Navigator.pop(context);
+                        createTodo(_titleController.text, token);
+                        context.goNamed(TodoListScreen.routeName,
+                            extra: 'guest');
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(15),

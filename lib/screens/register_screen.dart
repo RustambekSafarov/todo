@@ -20,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? token;
+  bool isvisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +121,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         child: TextField(
+                          obscureText: isvisible,
                           controller: passwordController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: isvisible == true
+                                  ? Icon(
+                                      Icons.visibility,
+                                      color: Colors.grey,
+                                    )
+                                  : Icon(
+                                      Icons.visibility_off,
+                                      color: Colors.grey,
+                                    ),
+                              onPressed: () {
+                                setState(() {
+                                  isvisible = !isvisible;
+                                });
+                              },
+                            ),
                             border: InputBorder.none,
                             hintText: "Password",
                             hintStyle: TextStyle(color: Colors.grey),
@@ -160,9 +178,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           emailController.text,
                           firstNameController.text,
                           lastNameController.text,
-                        ).then((value) => token = value);
-                        saveTokenToDatabase(token!);
-                        context.goNamed(TodoListScreen.routeName);
+                        ).then((value) {
+                          token = value;
+                          saveTokenToDatabase(token!);
+                          context.goNamed(TodoListScreen.routeName,
+                              extra: usernameController.text);
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF31274F),

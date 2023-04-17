@@ -24,6 +24,7 @@ Future<String> createUser(
     body: jsonEncode(body),
   );
   final token = jsonDecode(response.body);
+
   return token['token'];
 }
 
@@ -59,36 +60,40 @@ Future<String> userLogin(String username, String password) async {
   return tok['token'];
 }
 
+// User log out
+// Future userLogout(){
+
+// }
+
 // Here we will get all todos
 Future<List> getTodo(String token) async {
   var headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Token $token'
   };
+  print(token);
   http.Response response = await http.get(
     Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/createtodo/'),
     headers: headers,
   );
-
   if (response.statusCode == 200) {
+    List todoList = jsonDecode(response.body);
     print(await (response.body));
+    return todoList;
   } else {
     print(response.reasonPhrase);
+    return [];
   }
-  List<dynamic> todoList = jsonDecode(response.body);
-
-  return todoList;
 }
 
 // Here we will create todo
-Future<void> createTodo(String title, int id, String token) async {
+Future<void> createTodo(String title, String token) async {
   var headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Token $token'
   };
-  Map<String, String> body = {
+  Map<String, dynamic> body = {
     'title': title,
-    'user': id.toString(),
   };
 
   http.Response response = await http.post(
@@ -97,25 +102,42 @@ Future<void> createTodo(String title, int id, String token) async {
       body: jsonEncode(body));
 
   if (response.statusCode == 200) {
-    print(await (response.body));
+    print(await (response.statusCode));
   } else {
-    // print(response.reasonPhrase);
+    print(response.reasonPhrase);
     print(response.statusCode);
   }
 }
 
-Future<void> deleteTodo(String id, String token) async {
+Future<int> deleteTodo(int id, String token) async {
   var headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Token $token'
   };
-  var body = {
-    "id": int.parse(id),
+
+  http.Response response = await http.post(
+    Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/deletetodo/$id/'),
+    headers: headers,
+  );
+
+  if (response.statusCode == 200) {
+    print(await (response.body));
+    return jsonDecode(response.body)['status'];
+  } else {
+    print(response.reasonPhrase);
+    return 404;
+  }
+}
+
+// Get all users
+Future<List> getAllUser() async {
+  var headers = {
+    'Content-Type': 'application/json',
   };
-  http.Response response = await http.delete(
+
+  http.Response response = await http.get(
     Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/deletetodo/'),
     headers: headers,
-    body: jsonEncode(body),
   );
 
   if (response.statusCode == 200) {
@@ -123,4 +145,8 @@ Future<void> deleteTodo(String id, String token) async {
   } else {
     print(response.reasonPhrase);
   }
+
+  final users = jsonDecode(response.body);
+  print(users);
+  return users;
 }

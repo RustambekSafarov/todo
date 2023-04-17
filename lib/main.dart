@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
                   GoRoute(
                       path: 'todo',
                       name: TodoListScreen.routeName,
-                      builder: (context, state) => TodoListScreen(),
+                      builder: (context, state) => TodoListScreen(
+                            username: state.extra as String,
+                          ),
                       routes: [
                         GoRoute(
                           path: 'add-new',

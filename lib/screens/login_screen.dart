@@ -18,6 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   String token = '';
+  int? userID;
+  bool isvisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: IconButton(
-                onPressed: () {
-                  context.goNamed(TodoListScreen.routeName);
-                },
-                icon: Icon(Icons.arrow_back),
+                onPressed: null,
+                // () {
+                //   context.goNamed(TodoListScreen.routeName);
+                // },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
               ),
             ),
             const Spacer(),
@@ -90,8 +96,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
+                            obscureText: isvisible,
                             controller: passwordController,
                             decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: isvisible == true
+                                    ? Icon(
+                                        Icons.visibility,
+                                        color: Colors.grey,
+                                      )
+                                    : Icon(
+                                        Icons.visibility_off,
+                                        color: Colors.grey,
+                                      ),
+                                onPressed: () {
+                                  setState(() {
+                                    isvisible = !isvisible;
+                                  });
+                                },
+                              ),
                               border: InputBorder.none,
                               hintText: "Password",
                               hintStyle: TextStyle(color: Colors.grey),
@@ -127,9 +150,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           userLogin(
                             usernameController.text,
                             passwordController.text,
-                          ).then((value) => token = value);
-                          saveTokenToDatabase(token);
-                          context.goNamed(TodoListScreen.routeName);
+                          ).then((value) {
+                            token = value;
+                            saveTokenToDatabase(token);
+                            context.goNamed(TodoListScreen.routeName,
+                                extra: usernameController.text);
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF31274F),
