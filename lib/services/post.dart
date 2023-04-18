@@ -49,15 +49,17 @@ Future<String> userLogin(String username, String password) async {
   );
 
   if (response.statusCode == 200) {
+    final tok = jsonDecode(response.body);
+
     print(await response.body);
+    print(tok);
+    print(username);
+    print(password);
+    return tok['token'];
   } else {
     print(response.reasonPhrase);
+    return 'Error';
   }
-  final tok = jsonDecode(response.body);
-  print(tok);
-  print(username);
-  print(password);
-  return tok['token'];
 }
 
 // User log out

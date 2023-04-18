@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/screens/register_screen.dart';
 import 'package:todo/screens/todo_list_screen.dart';
 import 'package:todo/services/post.dart';
-
-import '../services/sqflite_db.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,92 +19,89 @@ class _LoginScreenState extends State<LoginScreen> {
   String token = '';
   int? userID;
   bool isvisible = true;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    getTokenFromDatabase().then((value) => token = value);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: IconButton(
-                onPressed: null,
-                // () {
-                //   context.goNamed(TodoListScreen.routeName);
-                // },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
+      body: Form(
+        key: _formKey,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: IconButton(
+                  onPressed: null,
+                  // () {
+                  //   context.goNamed(TodoListScreen.routeName);
+                  // },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    "Login",
-                    style: TextStyle(
-                        color: Color.fromRGBO(49, 39, 79, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[50],
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x4BC487C6),
-                            blurRadius: 20,
-                            offset: Offset(0, 10),
-                          )
-                        ]),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.grey[200]!,
-                              ),
-                            ),
-                          ),
-                          child: TextField(
+              const Spacer(),
+              GestureDetector(
+                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const Text(
+                        "Login",
+                        style: TextStyle(
+                            // color: Color.fromRGBO(49, 39, 79, 1),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please, enter your username!';
+                              }
+                              return null;
+                            },
                             controller: usernameController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Username",
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: "Username*",
                               hintStyle: TextStyle(color: Colors.grey),
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please, enter your password!';
+                              }
+                              return null;
+                            },
                             obscureText: isvisible,
                             controller: passwordController,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
                                 icon: isvisible == true
-                                    ? Icon(
+                                    ? const Icon(
                                         Icons.visibility,
                                         color: Colors.grey,
                                       )
-                                    : Icon(
+                                    : const Icon(
                                         Icons.visibility_off,
                                         color: Colors.grey,
                                       ),
@@ -115,81 +111,89 @@ class _LoginScreenState extends State<LoginScreen> {
                                   });
                                 },
                               ),
-                              border: InputBorder.none,
-                              hintText: "Password",
-                              hintStyle: TextStyle(color: Colors.grey),
+                              border: const OutlineInputBorder(),
+                              hintText: "Password*",
+                              hintStyle: const TextStyle(color: Colors.grey),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.grey,
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          color: Color(0xFFC487C6),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Center(
-                    child: SizedBox(
-                      height: height / 15,
-                      width: width / 2,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          userLogin(
-                            usernameController.text,
-                            passwordController.text,
-                          ).then((value) {
-                            token = value;
-                            saveTokenToDatabase(token);
-                            context.goNamed(TodoListScreen.routeName,
-                                extra: usernameController.text);
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF31274F),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: height / 15,
+                          width: width / 2,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+
+                              userLogin(
+                                usernameController.text,
+                                passwordController.text,
+                              ).then((v) async {
+                                if (v != 'Error' &&
+                                    _formKey.currentState!.validate()) {
+                                  await prefs.setString(
+                                      'username', usernameController.text);
+                                  await prefs.setString('token', v);
+                                  context.goNamed(TodoListScreen.routeName,
+                                      extra: usernameController.text);
+                                }
+                                return 'error';
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              // backgroundColor: const Color(0xFF31274F),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text('Login'),
+                            ),
                           ),
                         ),
-                        child: Center(
-                          child: Text('Login'),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            context.goNamed(RegisterScreen.routeName);
+                          },
+                          child: const Text(
+                            "Create Account",
+                            style: TextStyle(
+                              color: Colors.indigo,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        context.goNamed(RegisterScreen.routeName);
-                      },
-                      child: const Text(
-                        "Create Account",
-                        style: TextStyle(
-                          color: Color(0x9931274F),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            const Spacer(),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );
