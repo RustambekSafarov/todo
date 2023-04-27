@@ -1,9 +1,19 @@
-// import 'dart:io';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-String endPoint = 'local'; //Platform.environment['endPoint'] ?? "localhost";
+// var f = File('env.json').readAsStringSync();
+Future<String> getPoint() async {
+  String textasset = "assets/file.json"; //path to text file asset
+  String text = await rootBundle.loadString(textasset);
+
+  return jsonDecode(text)['endPoint'];
+}
+
+var endPoint = 'asdf'; //Platform.environment;
 // Create new user and take a token for todo
 Future<String> createUser(
   String username,
@@ -33,6 +43,8 @@ Future<String> createUser(
 
 // Login to program
 Future<String> userLogin(String username, String password) async {
+  // print(f);
+  endPoint = await getPoint();
   print(endPoint);
   Uri uri = Uri.parse('$endPoint/userlogin/');
   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';

@@ -32,30 +32,26 @@ class MyApp extends StatelessWidget {
         routerConfig: GoRouter(
           initialLocation: '/',
           routes: [
-            GoRoute(
-                path: '/',
-                name: LoginScreen.routeName,
-                builder: (context, state) => LoginScreen(),
-                routes: [
-                  GoRoute(
-                      path: 'todo',
-                      name: TodoListScreen.routeName,
-                      builder: (context, state) => TodoListScreen(
-                            username: state.extra as String,
-                          ),
-                      routes: [
-                        GoRoute(
-                          path: 'add-new',
-                          name: AddTodoScreen.routeName,
-                          builder: (context, state) => AddTodoScreen(),
-                        ),
-                      ]),
-                  GoRoute(
-                    path: 'register',
-                    name: RegisterScreen.routeName,
-                    builder: (context, state) => RegisterScreen(),
-                  ),
-                ]),
+            GoRoute(path: '/', name: LoginScreen.routeName, builder: (context, state) => LoginScreen(), routes: [
+              GoRoute(
+                  path: 'todo',
+                  name: TodoListScreen.routeName,
+                  builder: (context, state) => TodoListScreen(
+                        username: state.extra as String,
+                      ),
+                  routes: [
+                    GoRoute(
+                      path: 'add-new',
+                      name: AddTodoScreen.routeName,
+                      builder: (context, state) => AddTodoScreen(),
+                    ),
+                  ]),
+              GoRoute(
+                path: 'register',
+                name: RegisterScreen.routeName,
+                builder: (context, state) => RegisterScreen(),
+              ),
+            ]),
           ],
         ),
       ),
