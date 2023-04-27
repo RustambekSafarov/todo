@@ -1,9 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-String endPoint = Platform.environment['endPoint'] ?? "localhost";
+String endPoint = 'local'; //Platform.environment['endPoint'] ?? "localhost";
 // Create new user and take a token for todo
 Future<String> createUser(
   String username,
