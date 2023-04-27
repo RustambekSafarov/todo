@@ -1,13 +1,10 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // var f = File('env.json').readAsStringSync();
 Future<String> getPoint() async {
-  String textasset = "assets/file.json"; //path to text file asset
+  String textasset = "/file.json"; //path to text file asset
   String text = await rootBundle.loadString(textasset);
 
   return jsonDecode(text)['endPoint'];
