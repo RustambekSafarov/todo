@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-final endPoint = 'https://majidovdiyorbek.pythonanywhere.com/api';
+const endPoint = String.fromEnvironment('endPoint', defaultValue: 'localhost');
 // Create new user and take a token for todo
 Future<String> createUser(
   String username,
@@ -31,6 +31,7 @@ Future<String> createUser(
 
 // Login to program
 Future<String> userLogin(String username, String password) async {
+  print(endPoint);
   Uri uri = Uri.parse('$endPoint/userlogin/');
   String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   var headers = {

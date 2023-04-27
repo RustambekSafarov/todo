@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/screens/todo_list_screen.dart';
 import 'package:todo/services/post.dart';
 
@@ -63,6 +64,11 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () async {
+                        final SharedPreferences prefs = await SharedPreferences.getInstance();
+                        token = await prefs.getString(
+                          'token',
+                        )!;
+
                         createTodo(_titleController.text, token);
                         context.goNamed(TodoListScreen.routeName, extra: username);
                       },
@@ -86,6 +92,5 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
         ),
       ),
     );
-    ;
   }
 }
