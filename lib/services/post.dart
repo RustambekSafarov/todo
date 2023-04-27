@@ -4,7 +4,7 @@ import 'dart:convert';
 
 // var f = File('env.json').readAsStringSync();
 Future<String> getPoint() async {
-  String textasset = "/file.json"; //path to text file asset
+  String textasset = "assets/file.json"; //path to text file asset
   String text = await rootBundle.loadString(textasset);
 
   return jsonDecode(text)['endPoint'];
