@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+final endPoint = 'https://majidovdiyorbek.pythonanywhere.com/api';
 // Create new user and take a token for todo
 Future<String> createUser(
   String username,
@@ -9,7 +10,7 @@ Future<String> createUser(
   String first_name,
   String last_name,
 ) async {
-  Uri uri = Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/create/');
+  Uri uri = Uri.parse('$endPoint/create/');
   Map<String, String> headers = {'Content-Type': 'application/json'};
   Map<String, String> body = {
     'username': username,
@@ -30,10 +31,8 @@ Future<String> createUser(
 
 // Login to program
 Future<String> userLogin(String username, String password) async {
-  Uri uri =
-      Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/userlogin/');
-  String basicAuth =
-      'Basic ' + base64Encode(utf8.encode('$username:$password'));
+  Uri uri = Uri.parse('$endPoint/userlogin/');
+  String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
   var headers = {
     'Content-Type': 'application/json',
     'Authorization': basicAuth,
@@ -69,13 +68,14 @@ Future<String> userLogin(String username, String password) async {
 
 // Here we will get all todos
 Future<List> getTodo(String token) async {
+  Uri uri = Uri.parse('$endPoint/createtodo/');
   var headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Token $token'
+    'Authorization': 'Token $token',
   };
   print(token);
   http.Response response = await http.get(
-    Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/createtodo/'),
+    uri,
     headers: headers,
   );
   if (response.statusCode == 200) {
@@ -90,18 +90,20 @@ Future<List> getTodo(String token) async {
 
 // Here we will create todo
 Future<void> createTodo(String title, String token) async {
+  Uri uri = Uri.parse('$endPoint/createtodo/');
   var headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Token $token'
+    'Authorization': 'Token $token',
   };
   Map<String, dynamic> body = {
     'title': title,
   };
 
   http.Response response = await http.post(
-      Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/createtodo/'),
-      headers: headers,
-      body: jsonEncode(body));
+    uri,
+    headers: headers,
+    body: jsonEncode(body),
+  );
 
   if (response.statusCode == 200) {
     print(await (response.statusCode));
@@ -112,13 +114,11 @@ Future<void> createTodo(String title, String token) async {
 }
 
 Future<int> deleteTodo(int id, String token) async {
-  var headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Token $token'
-  };
+  Uri uri = Uri.parse('$endPoint/deletetodo/$id/');
+  var headers = {'Content-Type': 'application/json', 'Authorization': 'Token $token'};
 
   http.Response response = await http.post(
-    Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/deletetodo/$id/'),
+    uri,
     headers: headers,
   );
 
@@ -133,12 +133,13 @@ Future<int> deleteTodo(int id, String token) async {
 
 // Get all users
 Future<List> getAllUser() async {
+  Uri uri = Uri.parse('$endPoint/deletetodo/');
   var headers = {
     'Content-Type': 'application/json',
   };
 
   http.Response response = await http.get(
-    Uri.parse('https://majidovdiyorbek.pythonanywhere.com/api/deletetodo/'),
+    uri,
     headers: headers,
   );
 

@@ -42,8 +42,7 @@ class CategoryItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Card(
           elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               const SizedBox(
@@ -67,8 +66,7 @@ class CategoryItem extends StatelessWidget {
                   ),
                   Text(
                     title,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

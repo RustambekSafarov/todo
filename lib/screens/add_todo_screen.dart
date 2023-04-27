@@ -47,11 +47,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
               const SizedBox(height: 27),
               const Text(
                 'What are you planning?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                  letterSpacing: 1,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey, letterSpacing: 1),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 10, bottom: 18),
@@ -68,8 +64,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                     child: ElevatedButton(
                       onPressed: () async {
                         createTodo(_titleController.text, token);
-                        context.goNamed(TodoListScreen.routeName,
-                            extra: username);
+                        context.goNamed(TodoListScreen.routeName, extra: username);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(15),
@@ -85,9 +80,7 @@ class _AddTodoScreenState extends State<AddTodoScreen> {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              )
+              const SizedBox(height: 10)
             ],
           ),
         ),
