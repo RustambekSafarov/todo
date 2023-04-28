@@ -27,6 +27,27 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
+  login() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    _formKey.currentState!.validate();
+
+    userLogin(
+      usernameController.text,
+      passwordController.text,
+    ).then((v) async {
+      if (v != 'Error') {
+        Provider.of<CategoryList>(context, listen: false).updateToken(v);
+        context.goNamed(TodoListScreen.routeName, extra: usernameController.text);
+      } else if (v == 'Error') {
+        setState(() {
+          errorMessage = 'Error';
+        });
+        _formKey.currentState!.validate();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
@@ -102,6 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                               return null;
                             },
+                            onFieldSubmitted: (value) {
+                              login();
+                            },
                             obscureText: isvisible,
                             controller: passwordController,
                             decoration: InputDecoration(
@@ -150,25 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: height / 15,
                           width: width / 2,
                           child: ElevatedButton(
-                            onPressed: () async {
-                              final SharedPreferences prefs = await SharedPreferences.getInstance();
-                              _formKey.currentState!.validate();
-
-                              userLogin(
-                                usernameController.text,
-                                passwordController.text,
-                              ).then((v) async {
-                                if (v != 'Error') {
-                                  Provider.of<CategoryList>(context, listen: false).updateToken(v);
-                                  context.goNamed(TodoListScreen.routeName, extra: usernameController.text);
-                                } else if (v == 'Error') {
-                                  setState(() {
-                                    errorMessage = 'Error';
-                                  });
-                                  _formKey.currentState!.validate();
-                                }
-                              });
-                            },
+                            onPressed: login,
                             style: ElevatedButton.styleFrom(
                               // backgroundColor: const Color(0xFF31274F),
                               shape: RoundedRectangleBorder(

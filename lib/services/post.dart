@@ -69,10 +69,10 @@ Future<String> userLogin(String username, String password) async {
 }
 
 // User log out
-Future userLogout() async {
-  endPoint = await getPoint();
-  Uri uri = Uri.parse('$endPoint/createtodo/');
-}
+// Future userLogout() async {
+//   endPoint = await getPoint();
+//   Uri uri = Uri.parse('$endPoint/createtodo/');
+// }
 
 // Here we will get all todos
 Future<List> getTodo(String token) async {
