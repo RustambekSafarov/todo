@@ -69,4 +69,11 @@ class CategoryList with ChangeNotifier {
   List<Section> get categories {
     return [..._categories];
   }
+
+  String token = '';
+
+  updateToken(String token1) {
+    token = token1;
+    notifyListeners();
+  }
 }

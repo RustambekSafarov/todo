@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/services/post.dart';
 import 'package:todo/widgets/drawer.dart';
 
-import 'add_todo_screen.dart';
+import '../provider/todo.dart';
 
 class TodoListScreen extends StatefulWidget {
-  String username;
-  TodoListScreen({super.key, required this.username});
+  // String username;
+  // TodoListScreen({super.key, required this.username});
   static const routeName = 'todos';
 
   @override
@@ -17,27 +17,23 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  // String token = '';
+
   @override
   void initState() {
-    //  getTokenFromDatabase().then(
-    //   (value) {
-    //     token = value;
-    //   },
-    // );
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final token = Provider.of<CategoryList>(context, listen: false).token;
+    print('nimadir ' + token);
     return Scaffold(
         drawer: MainDrawer(
-          username: widget.username,
+          username: 'Guest',
         ),
         key: _scaffoldKey,
         body: FutureBuilder(
-            future: getTodo(''),
+            future: getTodo(token),
             builder: (context, snapshot) {
               return snapshot.connectionState == ConnectionState.waiting
                   ? Center(
@@ -86,8 +82,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                               TextButton(
                                                 onPressed: () async {
                                                   setState(() {
-                                                    deleteTodo(1, '')
-                                                        .then((value) {
+                                                    deleteTodo(snapshot.data![index]['id'], token).then((value) {
                                                       Navigator.pop(context);
                                                     });
                                                   });
@@ -101,7 +96,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                   leading: Checkbox(
                                     value: snapshot.data![index]['important'],
                                     onChanged: (value) {
-                                      value = true;
+                                      setState(() {
+                                        value = true;
+                                      });
                                     },
                                   ),
                                   title: Text(snapshot.data![index]['title']),

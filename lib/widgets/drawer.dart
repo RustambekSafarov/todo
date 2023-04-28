@@ -58,12 +58,12 @@ class MainDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     trailing: Icon(Icons.login),
-                    title: Text('Login'),
+                    title: Text('Log out'),
                     onTap: () {},
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

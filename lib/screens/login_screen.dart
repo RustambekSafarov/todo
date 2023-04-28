@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo/screens/register_screen.dart';
-import 'package:todo/screens/todo_list_screen.dart';
-import 'package:todo/services/post.dart';
+
+import '../provider/todo.dart';
+import '/screens/register_screen.dart';
+import '/screens/todo_list_screen.dart';
+import '/services/post.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,8 +20,10 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   String token = '';
+  String errorMessage = '';
   int? userID;
   bool isvisible = true;
+  bool _showUsernameError = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -72,11 +77,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please, enter your username!';
+                              } else if (errorMessage == 'Error') {
+                                return 'Incorrect username or password';
                               }
                               return null;
                             },
                             controller: usernameController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
+                              errorText: _showUsernameError ? 'Incorrect username' : null,
                               border: OutlineInputBorder(),
                               hintText: "Username*",
                               hintStyle: TextStyle(color: Colors.grey),
@@ -89,6 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please, enter your password!';
+                              } else if (errorMessage == 'Error') {
+                                return 'Incorrect username or password';
                               }
                               return null;
                             },
@@ -141,22 +151,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: width / 2,
                           child: ElevatedButton(
                             onPressed: () async {
-                              final SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
+                              final SharedPreferences prefs = await SharedPreferences.getInstance();
+                              _formKey.currentState!.validate();
 
                               userLogin(
                                 usernameController.text,
                                 passwordController.text,
                               ).then((v) async {
-                                if (v != 'Error' &&
-                                    _formKey.currentState!.validate()) {
-                                  await prefs.setString(
-                                      'username', usernameController.text);
-                                  await prefs.setString('token', v);
-                                  context.goNamed(TodoListScreen.routeName,
-                                      extra: usernameController.text);
+                                if (v != 'Error') {
+                                  Provider.of<CategoryList>(context, listen: false).updateToken(v);
+                                  context.goNamed(TodoListScreen.routeName, extra: usernameController.text);
+                                } else if (v == 'Error') {
+                                  setState(() {
+                                    errorMessage = 'Error';
+                                  });
+                                  _formKey.currentState!.validate();
                                 }
-                                return 'error';
                               });
                             },
                             style: ElevatedButton.styleFrom(

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/screens/login_screen.dart';
 import 'package:todo/screens/todo_list_screen.dart';
 import 'package:todo/services/post.dart';
+
+import '../provider/todo.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -53,8 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: <Widget>[
                     const Text(
                       "Sign up",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                     ),
                     const SizedBox(
                       height: 30,
@@ -167,8 +169,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: width / 2,
                         child: ElevatedButton(
                           onPressed: () async {
-                            final SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
                             if (!_formKey.currentState!.validate()) {
                               return;
                             } else {
@@ -178,12 +178,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 emailController.text,
                                 firstNameController.text,
                                 lastNameController.text,
-                              ).then((value) async {
-                                await prefs.setString(
-                                    'username', usernameController.text);
-                                await prefs.setString('token', value);
-                                context.goNamed(TodoListScreen.routeName,
-                                    extra: usernameController.text);
+                              ).then((v) async {
+                                Provider.of<CategoryList>(context).updateToken(v);
+                                context.goNamed(TodoListScreen.routeName, extra: usernameController.text);
                               });
                             }
                           },

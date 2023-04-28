@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,15 +12,11 @@ Future<String> getPoint() async {
   return jsonDecode(text)['endPoint'];
 }
 
-var endPoint = 'asdf'; //Platform.environment;
+var endPoint = ''; //Platform.environment;
+
 // Create new user and take a token for todo
-Future<String> createUser(
-  String username,
-  String password,
-  String email,
-  String first_name,
-  String last_name,
-) async {
+Future<String> createUser(String username, String password, String email, String first_name, String last_name) async {
+  endPoint = await getPoint();
   Uri uri = Uri.parse('$endPoint/create/');
   Map<String, String> headers = {'Content-Type': 'application/json'};
   Map<String, String> body = {
@@ -33,9 +31,9 @@ Future<String> createUser(
     headers: headers,
     body: jsonEncode(body),
   );
-  final token = jsonDecode(response.body);
+  final _token = jsonDecode(response.body);
 
-  return token['token'];
+  return _token['token'];
 }
 
 // Login to program
@@ -49,37 +47,36 @@ Future<String> userLogin(String username, String password) async {
     'Content-Type': 'application/json',
     'Authorization': basicAuth,
   };
-  Map<String, String> body = {
-    'username': username,
-    'password': password,
-  };
+
   http.Response response = await http.post(
     uri,
     headers: headers,
-    body: jsonEncode(body),
   );
 
   if (response.statusCode == 200) {
-    final tok = jsonDecode(response.body);
+    final _token = jsonDecode(response.body);
 
-    print(await response.body);
-    print(tok);
+    print(response.body);
+    print(_token);
     print(username);
     print(password);
-    return tok['token'];
+    return _token['token'];
   } else {
+    final err = jsonDecode(response.body);
     print(response.reasonPhrase);
     return 'Error';
   }
 }
 
 // User log out
-// Future userLogout(){
-
-// }
+Future userLogout() async {
+  endPoint = await getPoint();
+  Uri uri = Uri.parse('$endPoint/createtodo/');
+}
 
 // Here we will get all todos
 Future<List> getTodo(String token) async {
+  endPoint = await getPoint();
   Uri uri = Uri.parse('$endPoint/createtodo/');
   var headers = {
     'Content-Type': 'application/json',
@@ -102,6 +99,7 @@ Future<List> getTodo(String token) async {
 
 // Here we will create todo
 Future<void> createTodo(String title, String token) async {
+  endPoint = await getPoint();
   Uri uri = Uri.parse('$endPoint/createtodo/');
   var headers = {
     'Content-Type': 'application/json',
@@ -118,7 +116,7 @@ Future<void> createTodo(String title, String token) async {
   );
 
   if (response.statusCode == 200) {
-    print(await (response.statusCode));
+    print(response.statusCode);
   } else {
     print(response.reasonPhrase);
     print(response.statusCode);
@@ -126,6 +124,7 @@ Future<void> createTodo(String title, String token) async {
 }
 
 Future<int> deleteTodo(int id, String token) async {
+  endPoint = await getPoint();
   Uri uri = Uri.parse('$endPoint/deletetodo/$id/');
   var headers = {'Content-Type': 'application/json', 'Authorization': 'Token $token'};
 
@@ -145,6 +144,7 @@ Future<int> deleteTodo(int id, String token) async {
 
 // Get all users
 Future<List> getAllUser() async {
+  endPoint = await getPoint();
   Uri uri = Uri.parse('$endPoint/deletetodo/');
   var headers = {
     'Content-Type': 'application/json',
@@ -156,12 +156,12 @@ Future<List> getAllUser() async {
   );
 
   if (response.statusCode == 200) {
-    print(await (response.body));
+    print(response.body);
   } else {
     print(response.reasonPhrase);
   }
 
-  final users = jsonDecode(response.body);
-  print(users);
-  return users;
+  final _users = jsonDecode(response.body);
+  print(_users);
+  return _users;
 }
