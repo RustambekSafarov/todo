@@ -103,6 +103,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                               return null;
                             },
+                            onFieldSubmitted: (value) {
+                              login();
+                            },
                             controller: usernameController,
                             decoration: InputDecoration(
                               errorText: _showUsernameError ? 'Incorrect username' : null,
